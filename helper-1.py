@@ -197,3 +197,13 @@ def scale_dataset(dataframe, OverSample=True):
   data = np.hstack((X, np.reshape(y, (-1, 1))))
   
   return data, X, y
+
+# Confusion Matrix
+
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
