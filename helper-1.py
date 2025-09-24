@@ -150,34 +150,35 @@ def visualize_numerical_distributions(df):
     
 # Handle the Skewness in Dataset
 
-def visualize_numerical_distributions(df):
-    # Identify numerical columns
-    numerical_columns = df.select_dtypes(include=['number']).columns
+def handle_skewness(df, threshold=1.0):
+    """
+    Applies Box-Cox transformation to numerical columns in the DataFrame where skewness exceeds a threshold.
     
-    # Setup the figure for multiple subplots
-    num_cols = 5
-    num_rows = (len(numerical_columns) + num_cols - 1) // num_cols
+    Parameters:
+    - df (pd.DataFrame): The input DataFrame.
+    - threshold (float): Skewness threshold to decide which columns to transform.
     
-    fig, axes = plt.subplots(num_rows, num_cols, figsize=(18, 5 * num_rows))
-    fig.suptitle("Distribution of Numerical Features", fontsize=16)
+    Returns:
+    - pd.DataFrame: DataFrame with transformed columns.
+    - dict: Dictionary of lambda values used for Box-Cox transformation for each column.
+    """
+    numeric_cols = df.select_dtypes(include=['number']).columns
+    lambda_dict = {}
     
-    # Flatten axes array for easy iteration
-    axes = axes.flatten()
+    for col in numeric_cols:
+        skewness = df[col].skew()
+        # Check the skewness and ensure positive values for Box-Cox
+        if skewness > threshold:
+            # Adding 1 to shift all data to positive if there are zero or negative values
+            df[col] = df[col] + 1
+            df[col], fitted_lambda = boxcox(df[col])
+            lambda_dict[col] = fitted_lambda
     
-    # Iterate over each numerical column and create a histogram with KDE
-    for i, col in enumerate(numerical_columns):
-        sns.histplot(df[col], kde=True, ax=axes[i], palette="viridis", element='step', stat='density')
-        axes[i].set_title(f'Distribution of {col}', fontsize=14)
-        axes[i].set_xlabel(col, fontsize=12)
-        axes[i].set_ylabel('Density', fontsize=12)
-        
-    # Remove unused axes
-    for j in range(i + 1, len(axes)):
-        fig.delaxes(axes[j])
-        
-    # Adjust layout
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.show()
+    return df, lambda_dict
+
+# Example usage:
+# train_data is your DataFrame containing the numerical data
+train_data, lambda_values = handle_skewness(train_data)
     
     
 # Scale The Dataset
