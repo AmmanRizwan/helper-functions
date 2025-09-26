@@ -33,7 +33,7 @@ Note:
 
 # Visualize the Outliers in Box Plots
 
-def visualize_box_plots(df):
+def visualize__numerical_box_plots(df):
     """
     Visualizes the distribution of numerical features in the DataFrame using box plots to identify outliers.
     
@@ -68,6 +68,43 @@ def visualize_box_plots(df):
 
     # Adjust layout
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Adjust the main title space
+    plt.show()
+
+# Alternative version: If you want to visualize categorical data distribution itself
+def visualize_categorical_distributions(df):
+    """
+    Visualizes the distribution of categorical features using count plots and bar charts.
+    
+    Parameters:
+    - df (pd.DataFrame): The DataFrame containing the categorical features to visualize.
+    
+    Returns:
+    - None: Displays the plots.
+    """
+    # Identify categorical columns
+    categorical_columns = df.select_dtypes(include=['object'])
+
+    # Set up the figure
+    num_cols = 3
+    num_rows = (len(categorical_columns) + num_cols - 1) // num_cols
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(18, 5 * num_rows))
+    fig.suptitle('Distribution of Categorical Features', fontsize=16)
+
+    axes = axes.flatten()
+    
+    # Create count plots for each categorical column
+    for i, col in enumerate(categorical_columns):
+        sns.countplot(data=df, x=col, ax=axes[i], palette='viridis')
+        axes[i].set_title(f'Distribution of {col}', fontsize=14)
+        axes[i].set_xlabel(col, fontsize=12)
+        axes[i].set_ylabel('Count', fontsize=12)
+        axes[i].tick_params(axis='x', rotation=45)
+    
+    # Remove unused axes
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+    
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
 
 # Handle Outliers in Dataset
