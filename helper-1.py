@@ -6,10 +6,29 @@ handling and visualizing outliers, analyzing distributions, and data preprocessi
 The module includes functions for:
 
 - Visualizing outliers using box plots
+
+- Visualizing Categorical using count plots
+
 - Handling outliers using the IQR method
+
 - Calculating outlier percentages
+
 - Visualizing numerical distributions
+
 - Handling data skewness
+
+- Mutual Information
+    - Categorical Features
+    - Numerical Features
+    
+- Feature Engineering
+    - Label Encoding
+    - One Hot Encoding
+    - Scale Dataset
+    
+- Nueral Network Model
+    - Classification Problem
+    - Regression Problem (due)
 
 Author: Amman Rizwan
 
@@ -23,7 +42,7 @@ Dependencies:
 
 Usage:
   Import the required functions to perform various data analysis tasks:
-  from helper-1 import visualize_box_plots, handle_outliers, calculate_outliers_percentage
+  from helper-1 import visualize_box_plots, handle_outliers, calculate_outliers_percentage, mutual_information, feature_engineering
 
 Note:
   This module is designed to work with pandas DataFrames containing numerical data.
@@ -33,7 +52,7 @@ Note:
 
 # Visualize the Outliers in Box Plots
 
-def visualize__numerical_box_plots(df):
+def visualize_numerical_box_plots(df):
     """
     Visualizes the distribution of numerical features in the DataFrame using box plots to identify outliers.
     
@@ -234,6 +253,70 @@ def scale_dataset(dataframe, OverSample=True):
   data = np.hstack((X, np.reshape(y, (-1, 1))))
   
   return data, X, y
+
+# Feature Engineering of OneHotEncoding
+
+def feature_one_hot_encoder(df, columns, drop_columns=True):
+    ohe = OneHotEncoder(sparse_output=False, drop=None)
+    matrix = ohe.fit_transform(df[columns])
+    ohe_cols = ohe.get_feature_names_out(columns)
+    ohe_df = pd.DataFrame(matrix, columns=ohe_cols, index=df.index)
+    df = pd.concat([df, ohe_df], axis=1)
+
+    if drop_columns:
+        df.drop(columns=columns, inplace=True)
+
+    return df
+
+
+# Feature Enginerring of LabelEncoding
+
+# It work for only one column not for the multiple columns
+def feature_label_encoding(df, encode_column):
+    le = LabelEncoder()
+    
+    df[encode_column] = le.fit_transform(df[encode_column])
+    
+    return df
+
+# Numerical Mutual Information
+
+def numerical_mi_score(X, y):
+    mi_score = mutual_info_regression(X, y, random_state=42)
+    mi_score = pd.Series(mi_score, index=X.columns)
+    mi_score = mi_score.sort_values(ascending=False)
+    print(mi_score)
+    
+# Categorical Mutual Information
+
+def categorial_mi_score(X, y):
+    categorical_columns = X.select_dtypes(include=['object']).columns
+    order_encoded = OrdinalEncoder()
+    categorical_decode= order_encoded.fit_transform(X[categorical_columns])
+    
+    mi_score = mutual_info_classif(categorical_decode, y, discrete_features=True, random_state=42)
+    mi_score = pd.Series(mi_score, index=categorical_columns)
+    mi_score = mi_score.sort_values(ascending=False)
+    print(mi_score)
+    
+
+# Neural Network Model
+
+# input_size will be consider by the column of the dataset
+nn_model = tf.keras.Sequantial([
+    tf.keras.layers.Dense(64, activation='relu', input_size=(20,)),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+nn_model.compile(optimizer=tf.keras.optimizers.Adam(0.001), loss='binary_crossentropy', metrics=['accuracy'])
+
+history = nn_model.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.2)
+
+pred = nn_model.predict(X_test)
+
+pred = (pred > 0.5).astype(int).reshape(-1,)
+
 
 # Confusion Matrix
 
