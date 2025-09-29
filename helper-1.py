@@ -318,6 +318,16 @@ pred = nn_model.predict(X_test)
 pred = (pred > 0.5).astype(int).reshape(-1,)
 
 
+# OverSampling Dataset for Rebalanced the dataset
+
+def feature_rebalanced(X, y):
+    smote = SMOTE(random_state=42)
+    
+    X, y = smote.fit_resample(X, y)
+    
+    return X, y
+
+
 # Confusion Matrix
 
 cm = confusion_matrix(y_test, y_pred)
