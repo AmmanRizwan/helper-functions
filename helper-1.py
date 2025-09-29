@@ -327,6 +327,16 @@ def feature_rebalanced(X, y):
     
     return X, y
 
+# Correlation Matrix
+
+def correlation_feature_matrix(df):
+    numerical_columns = df.select_dtypes(include=['number']).columns
+    
+    corr = df[numerical_columns].corr()['loan_status'].sort_values(ascending=False)
+    corr_abs = corr.abs().sort_values(ascending=False)
+    
+    print(corr_abs)
+
 
 # Confusion Matrix
 
