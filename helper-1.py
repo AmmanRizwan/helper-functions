@@ -318,6 +318,26 @@ pred = nn_model.predict(X_test)
 pred = (pred > 0.5).astype(int).reshape(-1,)
 
 
+# OverSampling Dataset for Rebalanced the dataset
+
+def feature_rebalanced(X, y):
+    smote = SMOTE(random_state=42)
+    
+    X, y = smote.fit_resample(X, y)
+    
+    return X, y
+
+# Correlation Matrix
+
+def correlation_feature_matrix(df):
+    numerical_columns = df.select_dtypes(include=['number']).columns
+    
+    corr = df[numerical_columns].corr()['loan_status'].sort_values(ascending=False)
+    corr_abs = corr.abs().sort_values(ascending=False)
+    
+    print(corr_abs)
+
+
 # Confusion Matrix
 
 cm = confusion_matrix(y_test, y_pred)
