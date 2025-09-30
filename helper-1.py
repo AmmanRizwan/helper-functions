@@ -153,6 +153,16 @@ def handle_outliers(df):
 # Calculate the Outlier as Percentage
 
 def calculate_outliers_percentage(df):
+    """
+    Calculate the Percentage of the Outliers which is present in 
+    each columns
+    
+    Parameters:
+    - df (pd.DataFrame): DataFrame to process.
+    
+    Returns:
+    - None: Print the Calculated Outliers Percentage
+    """
     outlier_counts = {}
     
     for column in df.select_dtypes(include=['number']).columns:
@@ -240,26 +250,38 @@ train_data, lambda_values = handle_skewness(train_data)
 # Scale The Dataset
 
 def scale_dataset(dataframe, OverSample=True):
-  X = dataframe[dataframe.columns[:-1]].values
-  y = dataframe[dataframe.columns[-1]].values
-  
-  scaler = StanderScaler()
-  X = scaler.fit_transform(X)
-  
-  if OverSample:
-    ros = RandomOverSample()
-    X, y = ros.fit_resample(X, y)
+    """
+    Simple way to rebalance the dataset for the categorical features
     
-  data = np.hstack((X, np.reshape(y, (-1, 1))))
-  
-  return data, X, y
+    Parameters:
+    - df (pd.DataFrame): DataFrame to process
+    - OverSample (Boolean): Need to be ReSample Data
+    
+    Return:
+    - data (numpy.array()): return an 2d numpy array of the dataset with feature and target
+    - X (numpy.array()): return an 2d numpy array of the dataset with only features
+    - y (numpy.array()): return an 1d numpy array of the dataset with only label
+    """
+    X = dataframe[dataframe.columns[:-1]].values
+    y = dataframe[dataframe.columns[-1]].values
+    
+    scaler = StanderScaler()
+    X = scaler.fit_transform(X)
+    
+    if OverSample:
+        ros = RandomOverSample()
+        X, y = ros.fit_resample(X, y)
+        
+    data = np.hstack((X, np.reshape(y, (-1, 1))))
+    
+    return data, X, y
 
 # Feature Engineering of OneHotEncoding
 
-def feature_one_hot_encoder(df, columns, drop_columns=True):
+def feature_one_hot_encoder(df, column, drop_columns=True):
     ohe = OneHotEncoder(sparse_output=False, drop=None)
-    matrix = ohe.fit_transform(df[columns])
-    ohe_cols = ohe.get_feature_names_out(columns)
+    matrix = ohe.fit_transform(df[[column]])
+    ohe_cols = sorted(df[column].unique())
     ohe_df = pd.DataFrame(matrix, columns=ohe_cols, index=df.index)
     df = pd.concat([df, ohe_df], axis=1)
 
@@ -282,6 +304,18 @@ def feature_label_encoding(df, encode_column):
 # Numerical Mutual Information
 
 def numerical_mi_score(X, y):
+    """
+    Find the MI Scores of all the Numerical Feature in the dataset.
+    It help to identify which features are more important for the model performance.
+    (if the dataset is large enough to handle)
+    
+    Parameters:
+    - X (pd.DataFrame): Features to process
+    - y (pd.DataFrame): Label to process
+    
+    Returns:
+    - None
+    """
     mi_score = mutual_info_regression(X, y, random_state=42)
     mi_score = pd.Series(mi_score, index=X.columns)
     mi_score = mi_score.sort_values(ascending=False)
@@ -290,6 +324,18 @@ def numerical_mi_score(X, y):
 # Categorical Mutual Information
 
 def categorial_mi_score(X, y):
+    """
+    Find the MI Scores of all the Categorical Feature in the dataset.
+    It help to identify which features are more important for the model performance.
+    (if the dataset is large enough to handle)
+    
+    Parameters:
+    - X (pd.DataFrame): Features to process
+    - y (pd.DataFrame): Label to process
+    
+    Returns:
+    - None
+    """
     categorical_columns = X.select_dtypes(include=['object']).columns
     order_encoded = OrdinalEncoder()
     categorical_decode= order_encoded.fit_transform(X[categorical_columns])
@@ -321,6 +367,19 @@ pred = (pred > 0.5).astype(int).reshape(-1,)
 # OverSampling Dataset for Rebalanced the dataset
 
 def feature_rebalanced(X, y):
+    """
+    Impliment the resample library to rebalance the dataset for the 
+    balance dataset of features
+    
+    Parameters:
+    - X (pd.DataFrame): Features to process
+    - y (pd.DataFrame): Labels to process
+    
+    Returns:
+    - X (pd.DataFrame): Rebalance the Feature
+    - y (pd.DataFrame): Rebalance the Label
+    """
+    
     smote = SMOTE(random_state=42)
     
     X, y = smote.fit_resample(X, y)
@@ -330,6 +389,16 @@ def feature_rebalanced(X, y):
 # Correlation Matrix
 
 def correlation_feature_matrix(df):
+    """
+    Print the Correlation with the feature and target
+    
+    Parameters:
+    - df (pd.DataFrame): DataFrame to process
+    
+    Returns:
+    - None
+    """
+    
     numerical_columns = df.select_dtypes(include=['number']).columns
     
     corr = df[numerical_columns].corr()['loan_status'].sort_values(ascending=False)
