@@ -128,7 +128,7 @@ def visualize_categorical_distributions(df):
 
 # Handle Outliers in Dataset
 
-def handle_outliers(df):
+def handle_outliers(df, columns, all_columns=True):
     """
     Handles outliers in a DataFrame by capping based on the IQR method.
 
@@ -138,7 +138,14 @@ def handle_outliers(df):
     Returns:
     - pd.DataFrame: DataFrame with outliers handled.
     """
-    for column in df.select_dtypes(include=['number']).columns:
+    numerical_cols = []
+    
+    if all_columns:
+        numerical_cols = df.select_dtypes(include=['number']).columns
+    else:
+        numerical_cols = columns
+    
+    for column in numerical_cols:
         Q1 = df[column].quantile(0.25)
         Q3 = df[column].quantile(0.75)
         IQR = Q3 - Q1
@@ -216,7 +223,7 @@ def visualize_numerical_distributions(df):
     
 # Handle the Skewness in Dataset
 
-def handle_skewness(df, threshold=1.0):
+def handle_skewness(df, columns, threshold=1.0, all_columns=True):
     """
     Applies Box-Cox transformation to numerical columns in the DataFrame where skewness exceeds a threshold.
     
@@ -228,10 +235,14 @@ def handle_skewness(df, threshold=1.0):
     - pd.DataFrame: DataFrame with transformed columns.
     - dict: Dictionary of lambda values used for Box-Cox transformation for each column.
     """
-    numeric_cols = df.select_dtypes(include=['number']).columns
-    lambda_dict = {}
+    if all_columns:
+        numeric_cols = df.select_dtypes(include=['number']).columns
+    else:
+        numeric_cols = columns
+   
+    lambda_dict = {} 
     
-    for col in numeric_cols:
+    for col in  numeric_cols:
         skewness = df[col].skew()
         # Check the skewness and ensure positive values for Box-Cox
         if skewness > threshold:
