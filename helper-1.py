@@ -1,4 +1,6 @@
 """
+Focusing Mainly in Supervised Learning Datasets
+
 Helper Functions for Data Analysis and Visualization
 
 This module provides a collection of utility functions for data analysis, particularly focused on
