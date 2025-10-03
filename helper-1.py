@@ -438,3 +438,19 @@ plt.title("Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
+
+# Regression Prediction Plot
+
+def visualize_prediction_plot(X, y, X_test, y_pred):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(X, y, color='blue', label='Actual Data')
+    plt.plot(X_test, y_pred, color='red', linewidth=2, label="Regression Line")
+    plt.xlabel("X")
+    plt.ylabel("y")
+    plt.title("Regression Plot")
+    plt.legend()
+    plt.show()
+    
+# Regression Prediction
+# R2 Score
+# Mean Squared Error
