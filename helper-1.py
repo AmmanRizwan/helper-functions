@@ -51,6 +51,15 @@ Note:
   Some functions assume the presence of numerical columns in the input DataFrame.
 
 """
+# Relational Plot from the Feature and Label
+
+def visualize_relation_plot(df):
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data=df, x='Embarked', y='Survived', pallete='viridis')
+    plt.title("Relational Plot for the Feature and Label")
+    plt.xlabel("Embarked X Survived")
+    plt.ylabel("Count")
+    plt.show()
 
 # Visualize the Outliers in Box Plots
 
@@ -223,6 +232,31 @@ def visualize_numerical_distributions(df):
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.show()
     
+# Visualization of Scatter Plot of Features
+
+def visualize_scatter_plot(X, y):
+    numerical_columns = X.select_dtypes(include=['number']).columns
+    
+    num_cols = 3
+    num_rows = (len(numerical_columns) + num_cols - 1) // num_cols
+    
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(18, 5 * num_rows))
+    fig.suptitle("Scatter Plot of the Features", fontsize=16)
+    
+    axes = axes.flatten()
+    
+    for i, col in enumerate(numerical_columns):
+        sns.scatterplot(x=X[col], y=y, ax=axes[i])
+        axes[i].set_title(f"Scatter Plot of {col}", fontsize=14)
+        axes[i].set_xlabel(col, fontsize=14)
+        axes[i].set_ylabel("Y Label Prediction", fontsize=14)
+    
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+        
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.show()
+    
 # Handle the Skewness in Dataset
 
 def handle_skewness(df, columns, threshold=1.0, all_columns=True):
@@ -359,7 +393,7 @@ def categorial_mi_score(X, y):
     print(mi_score)
     
 
-# Neural Network Model
+# Neural Network Model for Classification
 
 # input_size will be consider by the column of the dataset
 nn_model = tf.keras.Sequantial([
@@ -375,6 +409,18 @@ history = nn_model.fit(X_train, y_train, epochs=50, batch_size=32, validation_sp
 pred = nn_model.predict(X_test)
 
 pred = (pred > 0.5).astype(int).reshape(-1,)
+
+# Neural Network Model for Regression
+
+model = tf.keras.Sequantial([
+    tf.keras.layers.Input(shape=(X_train.shape[1],)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1)
+])
+
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_absolute_error'])
+history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2)
 
 
 # OverSampling Dataset for Rebalanced the dataset
@@ -429,3 +475,19 @@ plt.title("Confusion Matrix")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
+
+# Regression Prediction Plot
+
+def visualize_prediction_plot(X, y, X_test, y_pred):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(X, y, color='blue', label='Actual Data')
+    plt.plot(X_test, y_pred, color='red', linewidth=2, label="Regression Line")
+    plt.xlabel("X")
+    plt.ylabel("y")
+    plt.title("Regression Plot")
+    plt.legend()
+    plt.show()
+    
+# Regression Prediction
+# R2 Score # When the prediciton is close to 0.95 better model
+# Mean Squared Error # When the prediction is close to 0.002 better model
