@@ -51,6 +51,15 @@ Note:
   Some functions assume the presence of numerical columns in the input DataFrame.
 
 """
+# Relational Plot from the Feature and Label
+
+def visualize_relation_plot(df):
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data=df, x='Embarked', y='Survived', pallete='viridis')
+    plt.title("Relational Plot for the Feature and Label")
+    plt.xlabel("Embarked X Survived")
+    plt.ylabel("Count")
+    plt.show()
 
 # Visualize the Outliers in Box Plots
 
