@@ -51,6 +51,24 @@ Note:
   Some functions assume the presence of numerical columns in the input DataFrame.
 
 """
+
+# Clean the column if there is an Numerical and Alphabet present
+# '120 km', 'FileName: 23kb', '34cc'
+
+def clean_numeric_category(df, column):
+    df[column] = pd.to_numeric(df[column].str.replace(r"[^0-9.]", "", regex=True))
+    
+    return df
+
+# Clean the column if there is an two numerical for separate from the feature
+
+def clean_numeric_category_efficient(df, column):
+    df[column] = df[column].str.findall(r'\d+\.?\d*')
+    df["first_column"] = df[column].str[0].astype(float)
+    df['second_column'] = df[column].str[1].astype(float)
+    
+    return df
+
 # Relational Plot from the Feature and Label
 
 def visualize_relation_plot(df):
