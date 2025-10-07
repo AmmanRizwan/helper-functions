@@ -52,6 +52,16 @@ Note:
 
 """
 
+# When there is an numerical and the more gap of the null value 
+# like 3, .... 7, null, 10, ... null, 34
+def method_missing_value_1(df, column):
+    df[column] = df[column].interpolate(method='spline', order=2).round()
+    
+# When there is an categorical and numerical value
+def method_missing_value_2(df, column):
+    df[column] = df[column].fillna(df[column].mode()[0])
+
+
 # Clean the column if there is an Numerical and Alphabet present
 # '120 km', 'FileName: 23kb', '34cc'
 

@@ -110,6 +110,51 @@ Includes a basic TensorFlow neural network model for binary classification with 
 6. **Model**: Train using provided neural network template or other algorithms
 7. **Evaluate**: Use confusion matrix template for classification results
 
+## Proper Step to do the ML Prediction
+
+### Import
+
+- Import the essential Libraries.
+- Import the Dataset.
+
+### Summary
+
+- Information of the Dataset.
+- Shape of the Dataset (Row, Column).
+- Check the Duplicated Values.
+- Check the Null Values.
+- Describe the Dataset.
+- Check the Correlation between the Features and Label.
+- Check the Mutual Information of the Features.
+
+### Visualize
+
+- Plot the Numerical Features of the Features (Box Plot)
+- Plot the Numerical Distribution of the Features (Skewness)
+- Plot the Categorical Distribution of the Features (Count Plots)
+- Correlation Distribution of the Features (Heatmap)
+- Describe Distribution of the Features (Heatmap)
+- Describe the Scatter Plot of the Features (Regression Problem)
+
+### Feature Engineering
+
+- Handle the misserable entries if exists
+- Handle the Missing Value if exists
+- Handle the Duplicate if exists
+- Handle Skewness if exists
+- Handle Outliers if exists
+- Handle Qualitative Feature
+  - One Hot Encoding if no natural order exists
+  - Label Encoding if natural order exists
+
+### Prediction
+
+- Split the Dataset into Train and Test
+- Over Sample the Dataset if imbalance data exists
+- Preprocessing the Dataset into standard scaler if not using the (Random Forest, Tree Classifier, XGBoost)
+- Predict the Test Set
+- Save the Model
+
 ## Contributing
 
 Feel free to contribute to this project by:
