@@ -9,13 +9,22 @@ This module provides a collection of utility functions for data analysis particu
 # Pair Plots
 
 def visualize_pair_plot(df):
-  pass
+  plt.figure(figsize=(10, 6))
+  sns.pairplot(dataset, hue='cluter', palette='viridis', diag_king="kde")
+  plt.suptitle("Pair Plot of Clusters")
+  plt.show()
 
 
 # Dimensionality Reduction
 
 def visualize_dimesion_reduction(df):
-  pass
+  # Need the PCA Transform before ploting
+  plt.figure(10, 6)
+  plt.scatter(df_pca['PCA1'], df_pca["PCA2"], c=df_pca['cluter'])
+  plt.title("Clusters after PCA Dimension Reduction")
+  plt.xlabel("Principle Component 1")
+  plt.ylabel("Principle Component 2")
+  plt.show()
 
 # Clusters Ploting
 
