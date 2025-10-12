@@ -72,3 +72,49 @@ def remove_punc(text):
   punc = string.punctuation
   text_nonPunc = ''.join([char for char in text if char not in punc])
   return text_nonPunc
+
+def drop_column(df, columns):
+  df.drop(columns=[columns], inplace=True)
+  
+def fnn_model():
+  model = keras.Sequential([
+    tf.keras.layers.Input(shape=(df.shape[1],)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(3, activation='softmax')
+  ])
+  
+  model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  
+  model.summary()
+  
+def cnn_model():
+  model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(28, 28, 1)),
+    tf.keras.layers.Conv2D(32, 3, activation='relu', padding='same'),
+    tf.keras.layers.MaxPooling2D(2),
+    tf.keras.layers.Conv2D(64, 3, activation='relu', padding='same'),
+    tf.keras.layers.MaxPooling2D(2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.4),
+    tf.keras.layers.Dense(10, activation='softmax')
+  ])
+  
+  model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  
+  model.summary()
+  
+def rnn_model():
+  model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(df.shape[1],))
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(12, activation='relu'),
+    tf.keras.layers.Dense(1, activiation='sigmoid'),
+  ])
+  
+  model.compile(optimizer='adam', loss='crossentropy', metrics=['accuracy'])
+  
+  model.summary()
